@@ -51,15 +51,15 @@ void add_curve( struct matrix *points,
                 double x2, double y2, 
                 double x3, double y3, 
                 double step, int type ) {
-  double t, x, y, newX, newY;
+  double t, x, y, secX, secY;
   struct matrix * curveX = generate_curve_coefs(x0, x1, x2, x3, type);
   struct matrix * curveY = generate_curve_coefs(y0, y1, y2, y3, type);
   for (t = 0; t < 1; t += step) {
-    x = curveX->m[0][0]*t*t*t + curveX->m[1][0]*t*t + curveX->m[2][0]*t + curveX->m[3][0];
+    x = curveX->m[0][0]*pow(t,3) + curveX->m[1][0]*pow(t,2) + curveX->m[2][0]*t + curveX->m[3][0];
     y = curveY->m[0][0]*t*t*t + curveY->m[1][0]*t*t + curveY->m[2][0]*t + curveY->m[3][0];
-    newX = curveX->m[0][0]*pow(t+step,3) + curveX->m[1][0]*pow(t+step,2) + curveX->m[2][0]*(t+step) + curveX->m[3][0];
-    newY = curveY->m[0][0]*pow(t+step,3) + curveY->m[1][0]*pow(t+step,2) + curveY->m[2][0]*(t+step) + curveY->m[3][0];
-    add_edge(points, x, y, 0, newX, newY, 0);
+    secX = curveX->m[0][0]*pow(t+step,3) + curveX->m[1][0]*pow(t+step,2) + curveX->m[2][0]*(t+step) + curveX->m[3][0];
+    secY = curveY->m[0][0]*pow(t+step,3) + curveY->m[1][0]*pow(t+step,2) + curveY->m[2][0]*(t+step) + curveY->m[3][0];
+    add_edge(points, x, y, 0, secX, secY, 0);
   }
 }
 
@@ -74,10 +74,9 @@ adds point (x, y, z) to points and increment points.lastcol
 if points is full, should call grow on points
 ====================*/
 void add_point( struct matrix * points, double x, double y, double z) {
-
-  if ( points->lastcol == points->cols )
+  if ( points->lastcol == points->cols ) {
     grow_matrix( points, points->lastcol + 100 );
-  
+  }
   points->m[0][ points->lastcol ] = x;
   points->m[1][ points->lastcol ] = y;
   points->m[2][ points->lastcol ] = z;

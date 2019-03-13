@@ -91,36 +91,23 @@ struct matrix * make_hermite() {
   ====================*/
 struct matrix * generate_curve_coefs( double p0, double p1,
                                       double p2, double p3, int type) {
+  struct matrix * curve;
+  struct matrix * points = new_matrix(4,1);
+  ident(points);
   if (type == 0) {
-    struct matrix * hermite = make_hermite();
-    struct matrix * points = new_matrix(4,1);
-    ident(points);
-
-    points->m[0][0] = p0;
-    points->m[1][0] = p1;
-    points->m[2][0] = p2;
-    points->m[3][0] = p3;
-		
-    matrix_mult(hermite, points);
-    free_matrix(hermite);
-		
-    return points;
+    curve = make_hermite();
   }
   else {
-    struct matrix * bezier = make_bezier();
-    struct matrix * points = new_matrix(4,1);
-    ident(points);
-
-    points->m[0][0] = p0;
-    points->m[1][0] = p1;
-    points->m[2][0] = p2;
-    points->m[3][0] = p3;
-		
-    matrix_mult(bezier, points);
-    free_matrix(bezier);
-		
-    return points;
+    curve = make_bezier();
   }
+  points->m[0][0] = p0;
+  points->m[1][0] = p1;
+  points->m[2][0] = p2;
+  points->m[3][0] = p3;
+		
+  matrix_mult(curve, points);
+  free_matrix(curve);
+  return points;
 }
 
 /*======== struct matrix * make_translate() ==========
